@@ -1,0 +1,271 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { usePermissions } from '../utils/permissions';
+import { getDashboardStats, getQuickStats, getPendingVerifications, getOpenDisputes } from '../mock-data';
+import { formatNumber, formatDate, timeAgo } from '../utils/helpers';
+import Header from '../components/layout/Header';
+import StatCard from '../components/common/StatCard';
+import ChartCard from '../components/common/ChartCard';
+import StatusBadge from '../components/common/StatusBadge';
+import SeverityBadge from '../components/common/SeverityBadge';
+import { Users, UserRoundCheck, Briefcase, Building2, ShieldAlertIcon, AlertTriangle, ArrowLeftRightIcon, Star, Sword, RotateCcw, CheckCircle, Clock, Activity, TrendingUp } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import styles from './Dashboard.module.css';
+
+const chartColors = ['#2563EB', '#C75A1B', '#16A34A', '#D97706', '#8B5CF6'];
+
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { isSupport } = usePermissions(user?.role);
+  const stats = getQuickStats();
+  const dashStats = getDashboardStats();
+  const pendingV = getPendingVerifications();
+  const openD = getOpenDisputes();
+  const recentActions = dashStats.recentActions || [];
+
+  const userRoleDistribution = (dashStats.userRoleDistribution || []).filter(
+    (item) => item.role !== 'Admin/Support'
+  );
+
+  const verificationPct = stats.totalUsers > 0 ? Math.round((stats.verifiedUsers / stats.totalUsers) * 100) : 0;
+
+  const summaryCards = [
+    { label: 'Total Users', value: formatNumber(stats.totalUsers), icon: <Users size={20} />, color: 'var(--color-info)' },
+    { label: 'Verified Users', value: formatNumber(stats.verifiedUsers), icon: <UserRoundCheck size={20} />, color: 'var(--color-success)' },
+    { label: 'Active Jobs', value: formatNumber(stats.activeJobs), icon: <Briefcase size={20} />, color: 'var(--color-text)' },
+    { label: 'Active Rentals', value: formatNumber(stats.activeRentals), icon: <Building2 size={20} />, color: 'var(--color-accent)' },
+    { label: 'Pending Disputes', value: formatNumber(stats.pendingDisputes), icon: <ShieldAlertIcon size={20} />, color: 'var(--color-warning)' },
+    { label: 'Flagged Content', value: formatNumber(stats.flaggedContent), icon: <AlertTriangle size={20} />, color: 'var(--color-danger)' },
+    { label: 'Total Transactions', value: formatNumber(stats.totalTransactions), icon: <ArrowLeftRightIcon size={20} />, color: 'var(--color-success)' },
+    { label: 'Pending Verifications', value: formatNumber(stats.pendingVerifications), icon: <UserRoundCheck size={20} />, color: 'var(--color-text-muted)' },
+  ];
+
+  const quickActions = [
+    { label: 'Review Verifications', icon: <UserRoundCheck size={18} />, path: '/verifications', permission: 'viewVerifications' },
+    { label: 'View Disputes', icon: <ShieldAlertIcon size={18} />, path: '/oversight', permission: 'viewDisputes' },
+    { label: 'Moderate Content', icon: <Sword size={18} />, path: '/oversight', permission: 'viewDisputes' },
+    { label: 'Check Appeals', icon: <RotateCcw size={18} />, path: '/oversight', permission: 'viewDisputes' },
+    { label: 'Monitor Transactions', icon: <ArrowLeftRightIcon size={18} />, path: '/transactions', permission: 'viewTransactions' },
+    { label: 'Manage Galaw Points', icon: <Star size={18} />, path: '/galaw-points', permission: 'viewGalawPoints' },
+  ];
+
+  return (
+    <div>
+      <Header title="Dashboard" />
+      <div className="dashboard-grid">
+        {summaryCards.map((card, idx) => (
+          <StatCard key={idx} {...card} />
+        ))}
+      </div>
+
+      <div className={styles.dashboardContent}>
+        <div className={styles.dashboardMain}>
+          <div className="dashboard-charts">
+            <ChartCard title="Monthly Transactions">
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={dashStats.monthlyTransactions || []}>
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Bar dataKey="amount" fill="var(--color-info)" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+            <ChartCard title="Users by Role">
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={userRoleDistribution}
+                    dataKey="count"
+                    nameKey="role"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={65}
+                    innerRadius={30}
+                    label={({ role, count }) => `${role}: ${count}`}
+                  >
+                    {userRoleDistribution.map((_, idx) => (
+                      <Cell key={idx} fill={chartColors[idx % chartColors.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+
+          {!isSupport && (
+            <div className="mb-4">
+              <div className="dashboard-section-title">Quick Actions</div>
+              <div className="quick-actions">
+                {quickActions.map((action, idx) => (
+                  <div
+                    key={idx}
+                    className="quick-action-card"
+                    onClick={() => navigate(action.path)}
+                  >
+                    <div className="quick-action-icon">{action.icon}</div>
+                    <div className="quick-action-text">{action.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="dashboard-activity-grid">
+            <div className="card">
+              <div className="card-header">
+                <h3>Recent Verification Requests</h3>
+              </div>
+              <div className="card-body">
+                {pendingV.length === 0 ? (
+                  <div className="empty-state" style={{ padding: '0.75rem' }}>
+                    <div className="empty-state-text">No pending verifications</div>
+                  </div>
+                ) : (
+                  pendingV.map((v) => (
+                    <div key={v.id} className="recent-item clickable" onClick={() => navigate('/verifications')}>
+                      <div className="recent-item-info">
+                        <div className="recent-item-title">{v.userName}</div>
+                        <div className="recent-item-sub">{v.userRole} - {formatDate(v.submittedAt)}</div>
+                      </div>
+                      <StatusBadge status="pending" />
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-header">
+                <h3>Recent Disputes & Reports</h3>
+              </div>
+              <div className="card-body">
+                {openD.length === 0 ? (
+                  <div className="empty-state" style={{ padding: '0.75rem' }}>
+                    <div className="empty-state-text">No open disputes</div>
+                  </div>
+                ) : (
+                  openD.slice(0, 4).map((d) => (
+                    <div key={d.id} className="recent-item clickable" onClick={() => navigate(`/disputes/${d.id}`)}>
+                      <div className="recent-item-info">
+                        <div className="recent-item-title">{d.title}</div>
+                        <div className="recent-item-sub">{d.type} - {timeAgo(d.createdAt)}</div>
+                      </div>
+                      <SeverityBadge severity={d.severity} />
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-header">
+                <h3>Recent Admin/Support Actions</h3>
+              </div>
+              <div className="card-body">
+                {recentActions.length === 0 ? (
+                  <div className="empty-state" style={{ padding: '0.75rem' }}>
+                    <div className="empty-state-text">No recent actions</div>
+                  </div>
+                ) : (
+                  recentActions.slice(0, 5).map((a, idx) => (
+                    <div key={idx} className="recent-item">
+                      <div className="recent-item-info">
+                        <div className="recent-item-title">{a.action}</div>
+                        <div className="recent-item-sub">by {a.agent} - {a.target}</div>
+                      </div>
+                      <div className="recent-item-date">{timeAgo(a.date)}</div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside className={styles.dashboardSidebar}>
+          <div className={styles.statusCard}>
+            <div className={styles.statusCardHeader}>
+              <h3><Activity size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />System Status</h3>
+            </div>
+            <div className={styles.statusCardBody}>
+              <div className={styles.statusItem}>
+                <span className={styles.statusItemLabel}>
+                  <span className={styles.statusItemDot} style={{ background: 'var(--color-success)' }} />
+                  Verification Rate
+                </span>
+                <span className={styles.statusItemValue}>{verificationPct}%</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusItemLabel}>
+                  <span className={styles.statusItemDot} style={{ background: 'var(--color-info)' }} />
+                  User Growth
+                </span>
+                <span className={styles.statusItemValue}>{dashStats.userGrowth}%</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusItemLabel}>
+                  <span className={styles.statusItemDot} style={{ background: 'var(--color-warning)' }} />
+                  Dispute Growth
+                </span>
+                <span className={styles.statusItemValue}>{dashStats.disputeGrowth}%</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusItemLabel}>
+                  <span className={styles.statusItemDot} style={{ background: dashStats.transactionGrowth >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }} />
+                  Transaction Growth
+                </span>
+                <span className={styles.statusItemValue}>{dashStats.transactionGrowth >= 0 ? '+' : ''}{dashStats.transactionGrowth}%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.statusCard}>
+            <div className={styles.statusCardHeader}>
+              <h3><TrendingUp size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />Platform Overview</h3>
+            </div>
+            <div className={styles.statusCardBody}>
+              <div className={styles.overviewGrid}>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Galaw Points</div>
+                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.totalGalawPointsPurchased)}</div>
+                </div>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Consumed</div>
+                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.totalGalawPointsConsumed)}</div>
+                </div>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Outstanding</div>
+                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.outstandingGalawPoints)}</div>
+                </div>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Incidents</div>
+                  <div className={styles.overviewItemValue}>{dashStats.incidentsThisMonth}</div>
+                </div>
+              </div>
+              <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--color-border-light)' }}>
+                <div className={styles.metricsList}>
+                  <div className={styles.metricRow}>
+                    <span className={styles.metricLabel}>User Growth</span>
+                    <span className={styles.metricValue}>{dashStats.userGrowth}%</span>
+                  </div>
+                  <div className={styles.metricRow}>
+                    <span className={styles.metricLabel}>Job Growth</span>
+                    <span className={styles.metricValue} style={{ color: 'var(--color-danger)' }}>{dashStats.jobGrowth}%</span>
+                  </div>
+                  <div className={styles.metricRow}>
+                    <span className={styles.metricLabel}>Transaction Growth</span>
+                    <span className={styles.metricValue}>{dashStats.transactionGrowth >= 0 ? '+' : ''}{dashStats.transactionGrowth}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}

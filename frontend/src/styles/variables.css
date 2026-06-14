@@ -1,0 +1,128 @@
+:root {
+  --color-primary: #0F2747;
+  --color-primary-hover: #163B68;
+  --color-primary-active: #1A3F6E;
+  --color-primary-muted: rgba(15, 39, 71, 0.06);
+  --color-accent: #C75A1B;
+  --color-accent-hover: #A64712;
+  --color-accent-active: #8B3B0E;
+  --color-accent-muted: rgba(199, 90, 27, 0.08);
+
+  --color-bg: #f2f3f3;
+  --color-surface: #F1F5F9;
+  --color-surface-hover: #E2E8F0;
+  --color-surface-elevated: #FFFFFF;
+
+  --color-border: #E2E8F0;
+  --color-border-light: #E2E8F0;
+  --color-border-focus: #C75A1B;
+
+  --color-text: #0F172A;
+  --color-text-muted: #64748B;
+  --color-text-dim: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+
+  --color-success: #16A34A;
+  --color-success-bg: rgba(22, 163, 74, 0.08);
+  --color-warning: #D97706;
+  --color-warning-bg: rgba(217, 119, 6, 0.08);
+  --color-danger: #DC2626;
+  --color-danger-bg: rgba(220, 38, 38, 0.08);
+  --color-info: #2563EB;
+  --color-info-bg: rgba(37, 99, 235, 0.08);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.125rem;
+  --text-2xl: 1.375rem;
+  --text-3xl: 1.625rem;
+
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  --tracking-tight: -0.012em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.015em;
+  --tracking-wider: 0.04em;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 72px;
+  --header-height: 56px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 12px 40px rgba(15, 23, 42, 0.08);
+  --shadow-ring: 0 0 0 2px rgba(199, 90, 27, 0.35);
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  --icon-stroke: 1.5;
+  --icon-size-sm: 14px;
+  --icon-size-md: 16px;
+  --icon-size-lg: 20px;
+  --icon-size-xl: 24px;
+
+  --icon-color: #1F2937;
+  --icon-color-muted: #374151;
+  --icon-color-inverse: #FFFFFF;
+  --icon-color-accent: #C75A1B;
+  --icon-color-success: #1F7A4D;
+  --icon-color-warning: #B45309;
+  --icon-color-danger: #B91C1C;
+  --icon-color-info: #1D4ED8;
+
+  --z-sidebar: 100;
+  --z-header: 50;
+  --z-modal: 200;
+  --z-panel: 150;
+  --z-dropdown: 60;
+  --z-tooltip: 300;
+
+  --sidebar-bg: #0F172A;
+  --sidebar-hover: #1E293B;
+  --sidebar-active-bg: #1E293B;
+  --sidebar-active-border: #C75A1B;
+  --sidebar-text: #94A3B8;
+  --sidebar-text-hover: #F1F5F9;
+  --sidebar-text-active: #FFFFFF;
+  --sidebar-divider: rgba(148, 163, 184, 0.12);
+  --sidebar-logo-bg: #0B1120;
+
+  --card-bg: #FFFFFF;
+  --card-radius: 12px;
+  --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --card-shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

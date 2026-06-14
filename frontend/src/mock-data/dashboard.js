@@ -1,0 +1,53 @@
+const dashboardStats = {
+  totalUsers: 20,
+  verifiedUsers: 16,
+  activeJobs: 6,
+  activeRentals: 3,
+  pendingDisputes: 1,
+  flaggedContent: 5,
+  totalTransactions: 13,
+  totalRevenue: 399000,
+  totalGalawPointsPurchased: 5000,
+  totalGalawPointsConsumed: 400,
+  totalGalawPointsRefunded: 100,
+  outstandingGalawPoints: 4900,
+  pendingVerifications: 2,
+  pendingAppeals: 2,
+  incidentsThisMonth: 8,
+  userGrowth: 12.5,
+  jobGrowth: -3.2,
+  transactionGrowth: 8.1,
+  disputeGrowth: 15.0,
+  monthlyTransactions: [
+    { month: 'Jan', count: 45, amount: 180000 },
+    { month: 'Feb', count: 52, amount: 210000 },
+    { month: 'Mar', count: 48, amount: 195000 },
+    { month: 'Apr', count: 65, amount: 280000 },
+    { month: 'May', count: 58, amount: 250000 },
+  ],
+  userRoleDistribution: [
+    { role: 'Client', count: 6 },
+    { role: 'Talent', count: 6 },
+    { role: 'Contractor', count: 3 },
+    { role: 'Equipment Owner', count: 4 },
+    { role: 'Admin/Support', count: 2 },
+  ],
+  recentVerifications: [
+    { id: 'ver-001', userName: 'Roberto Lim', role: 'contractor', status: 'pending', submittedAt: '2025-05-02T08:00:00Z' },
+    { id: 'ver-002', userName: 'Emilio Aguilar', role: 'talent', status: 'pending', submittedAt: '2025-05-16T10:00:00Z' },
+  ],
+  recentDisputes: [
+    { id: 'disp-001', title: 'Incomplete masonry work', severity: 'high', status: 'under-review', createdAt: '2025-04-20T08:00:00Z' },
+    { id: 'disp-005', title: 'Electrical work disagreement', severity: 'medium', status: 'pending', createdAt: '2025-05-19T11:00:00Z' },
+    { id: 'disp-004', title: 'Harassment complaint', severity: 'high', status: 'under-review', createdAt: '2025-05-15T16:00:00Z' },
+  ],
+  recentActions: [
+    { agent: 'Miguel Santos', action: 'Suspended user account', target: 'Carlos Mendoza', date: '2025-05-15T10:00:00Z' },
+    { agent: 'Angela Cruz', action: 'Forwarded appeal', target: 'Fernando Santiago', date: '2025-04-12T14:00:00Z' },
+    { agent: 'Miguel Santos', action: 'Resolved damage dispute', target: 'Ana Gonzales', date: '2025-05-07T10:00:00Z' },
+    { agent: 'Angela Cruz', action: 'Moderated flagged review', target: 'Pedro Reyes review', date: '2025-05-19T10:00:00Z' },
+    { agent: 'Miguel Santos', action: 'Approved verification', target: 'Jose Rizal III', date: '2024-05-03T10:00:00Z' },
+  ],
+};
+
+export default dashboardStats;

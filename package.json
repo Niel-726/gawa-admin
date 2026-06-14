@@ -1,0 +1,17 @@
+{
+  "name": "gawa-admin-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GAWA Admin Portal — root workspace with concurrent frontend + backend scripts",
+  "scripts": {
+    "dev": "concurrently -n fe,be -c cyan,yellow \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+    "dev:fe": "npm run dev --prefix frontend",
+    "dev:be": "npm run dev --prefix backend",
+    "build": "npm run build --prefix frontend",
+    "preview": "npm run preview --prefix frontend",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
