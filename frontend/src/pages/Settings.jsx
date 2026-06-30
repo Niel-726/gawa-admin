@@ -155,7 +155,7 @@ export default function Settings() {
                 </div>
               </div>
               {pwMsg && (
-                <div style={{ fontSize: 13, color: pwMsg.includes('success') ? 'var(--color-success)' : 'var(--color-danger)', marginBottom: 12 }}>
+                <div style={{ fontSize: 13, color: pwMsg.includes('success') ? 'var(--color-success)' : 'var(--color-error)', marginBottom: 12 }}>
                   {pwMsg}
                 </div>
               )}
@@ -230,7 +230,7 @@ export default function Settings() {
             </div>
 
             <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 20 }}>
-              <div style={{ fontWeight: 600, marginBottom: 16, color: 'var(--color-primary)' }}>Invite New Team Member</div>
+              <div style={{ fontWeight: 600, marginBottom: 16, color: 'var(--color-text)' }}>Invite New Team Member</div>
               <form onSubmit={handleInvite}>
                 <div className="form-row">
                   <div className="form-group">

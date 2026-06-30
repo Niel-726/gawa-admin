@@ -1,0 +1,1 @@
+import{j as s}from"./vendor-react-nKzJQrdj.js";function l({tabs:i,activeTab:n,onChange:r}){return s.jsx("div",{className:"tabs",children:i.map(e=>s.jsx("button",{className:`tab${n===(e.key||e)?" active":""}`,onClick:()=>r(e.key||e),children:e.label||e},e.key||e))})}export{l as T};

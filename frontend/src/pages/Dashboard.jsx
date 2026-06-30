@@ -9,7 +9,7 @@ import StatCard from '../components/common/StatCard';
 import ChartCard from '../components/common/ChartCard';
 import StatusBadge from '../components/common/StatusBadge';
 import SeverityBadge from '../components/common/SeverityBadge';
-import { Users, UserRoundCheck, Briefcase, Building2, ShieldAlertIcon, AlertTriangle, ArrowLeftRightIcon, Star, Sword, RotateCcw, CheckCircle, Clock, Activity, TrendingUp } from 'lucide-react';
+import { Users, UserRoundCheck, Briefcase, Building2, ShieldAlertIcon, AlertTriangle, ArrowLeftRightIcon, Star, Sword, RotateCcw, Activity, TrendingUp } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import styles from './Dashboard.module.css';
 
@@ -32,12 +32,12 @@ export default function Dashboard() {
   const verificationPct = stats.totalUsers > 0 ? Math.round((stats.verifiedUsers / stats.totalUsers) * 100) : 0;
 
   const summaryCards = [
-    { label: 'Total Users', value: formatNumber(stats.totalUsers), icon: <Users size={20} />, color: 'var(--color-info)' },
+    { label: 'Total Users', value: formatNumber(stats.totalUsers), icon: <Users size={20} />, color: 'var(--color-blue)' },
     { label: 'Verified Users', value: formatNumber(stats.verifiedUsers), icon: <UserRoundCheck size={20} />, color: 'var(--color-success)' },
     { label: 'Active Jobs', value: formatNumber(stats.activeJobs), icon: <Briefcase size={20} />, color: 'var(--color-text)' },
     { label: 'Active Rentals', value: formatNumber(stats.activeRentals), icon: <Building2 size={20} />, color: 'var(--color-accent)' },
     { label: 'Pending Disputes', value: formatNumber(stats.pendingDisputes), icon: <ShieldAlertIcon size={20} />, color: 'var(--color-warning)' },
-    { label: 'Flagged Content', value: formatNumber(stats.flaggedContent), icon: <AlertTriangle size={20} />, color: 'var(--color-danger)' },
+    { label: 'Flagged Content', value: formatNumber(stats.flaggedContent), icon: <AlertTriangle size={20} />, color: 'var(--color-error)' },
     { label: 'Total Transactions', value: formatNumber(stats.totalTransactions), icon: <ArrowLeftRightIcon size={20} />, color: 'var(--color-success)' },
     { label: 'Pending Verifications', value: formatNumber(stats.pendingVerifications), icon: <UserRoundCheck size={20} />, color: 'var(--color-text-muted)' },
   ];
@@ -54,7 +54,7 @@ export default function Dashboard() {
   return (
     <div>
       <Header title="Dashboard" />
-      <div className="dashboard-grid">
+      <div className="kpi-row">
         {summaryCards.map((card, idx) => (
           <StatCard key={idx} {...card} />
         ))}
@@ -62,14 +62,14 @@ export default function Dashboard() {
 
       <div className={styles.dashboardContent}>
         <div className={styles.dashboardMain}>
-          <div className="dashboard-charts">
+          <div className="charts-row">
             <ChartCard title="Monthly Transactions">
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={dashStats.monthlyTransactions || []}>
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip />
-                  <Bar dataKey="amount" fill="var(--color-info)" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="amount" fill="var(--color-blue)" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -94,34 +94,52 @@ export default function Dashboard() {
                 </PieChart>
               </ResponsiveContainer>
             </ChartCard>
+            <ChartCard title="Platform Overview">
+              <div className={styles.overviewGrid}>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Galaw Points</div>
+                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.totalGalawPointsPurchased)}</div>
+                </div>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Consumed</div>
+                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.totalGalawPointsConsumed)}</div>
+                </div>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Outstanding</div>
+                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.outstandingGalawPoints)}</div>
+                </div>
+                <div className={styles.overviewItem}>
+                  <div className={styles.overviewItemLabel}>Incidents</div>
+                  <div className={styles.overviewItemValue}>{dashStats.incidentsThisMonth}</div>
+                </div>
+              </div>
+              <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--color-divider)' }}>
+                <div className={styles.metricsList}>
+                  <div className={styles.metricRow}>
+                    <span className={styles.metricLabel}>User Growth</span>
+                    <span className={styles.metricValue}>{dashStats.userGrowth}%</span>
+                  </div>
+                  <div className={styles.metricRow}>
+                    <span className={styles.metricLabel}>Job Growth</span>
+                    <span className={styles.metricValue} style={{ color: 'var(--color-error)' }}>{dashStats.jobGrowth}%</span>
+                  </div>
+                  <div className={styles.metricRow}>
+                    <span className={styles.metricLabel}>Transaction Growth</span>
+                    <span className={styles.metricValue}>{dashStats.transactionGrowth >= 0 ? '+' : ''}{dashStats.transactionGrowth}%</span>
+                  </div>
+                </div>
+              </div>
+            </ChartCard>
           </div>
 
-          {!isSupport && (
-            <div className="mb-4">
-              <div className="dashboard-section-title">Quick Actions</div>
-              <div className="quick-actions">
-                {quickActions.map((action, idx) => (
-                  <div
-                    key={idx}
-                    className="quick-action-card"
-                    onClick={() => navigate(action.path)}
-                  >
-                    <div className="quick-action-icon">{action.icon}</div>
-                    <div className="quick-action-text">{action.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="dashboard-activity-grid">
+          <div className="metrics-row">
             <div className="card">
               <div className="card-header">
                 <h3>Recent Verification Requests</h3>
               </div>
               <div className="card-body">
                 {pendingV.length === 0 ? (
-                  <div className="empty-state" style={{ padding: '0.75rem' }}>
+                  <div className="empty-state">
                     <div className="empty-state-text">No pending verifications</div>
                   </div>
                 ) : (
@@ -144,7 +162,7 @@ export default function Dashboard() {
               </div>
               <div className="card-body">
                 {openD.length === 0 ? (
-                  <div className="empty-state" style={{ padding: '0.75rem' }}>
+                  <div className="empty-state">
                     <div className="empty-state-text">No open disputes</div>
                   </div>
                 ) : (
@@ -167,7 +185,7 @@ export default function Dashboard() {
               </div>
               <div className="card-body">
                 {recentActions.length === 0 ? (
-                  <div className="empty-state" style={{ padding: '0.75rem' }}>
+                  <div className="empty-state">
                     <div className="empty-state-text">No recent actions</div>
                   </div>
                 ) : (
@@ -187,6 +205,26 @@ export default function Dashboard() {
         </div>
 
         <aside className={styles.dashboardSidebar}>
+          {!isSupport && (
+            <div className={styles.statusCard}>
+              <div className={styles.statusCardHeader}>
+                <h3>Quick Actions</h3>
+              </div>
+              <div className={styles.quickActionList}>
+                {quickActions.map((action, idx) => (
+                  <button
+                    key={idx}
+                    className={styles.quickActionItem}
+                    onClick={() => navigate(action.path)}
+                  >
+                    <span className={styles.quickActionIcon}>{action.icon}</span>
+                    <span>{action.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className={styles.statusCard}>
             <div className={styles.statusCardHeader}>
               <h3><Activity size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />System Status</h3>
@@ -201,7 +239,7 @@ export default function Dashboard() {
               </div>
               <div className={styles.statusItem}>
                 <span className={styles.statusItemLabel}>
-                  <span className={styles.statusItemDot} style={{ background: 'var(--color-info)' }} />
+                  <span className={styles.statusItemDot} style={{ background: 'var(--color-blue)' }} />
                   User Growth
                 </span>
                 <span className={styles.statusItemValue}>{dashStats.userGrowth}%</span>
@@ -215,52 +253,10 @@ export default function Dashboard() {
               </div>
               <div className={styles.statusItem}>
                 <span className={styles.statusItemLabel}>
-                  <span className={styles.statusItemDot} style={{ background: dashStats.transactionGrowth >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }} />
+                  <span className={styles.statusItemDot} style={{ background: dashStats.transactionGrowth >= 0 ? 'var(--color-success)' : 'var(--color-error)' }} />
                   Transaction Growth
                 </span>
                 <span className={styles.statusItemValue}>{dashStats.transactionGrowth >= 0 ? '+' : ''}{dashStats.transactionGrowth}%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.statusCard}>
-            <div className={styles.statusCardHeader}>
-              <h3><TrendingUp size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />Platform Overview</h3>
-            </div>
-            <div className={styles.statusCardBody}>
-              <div className={styles.overviewGrid}>
-                <div className={styles.overviewItem}>
-                  <div className={styles.overviewItemLabel}>Galaw Points</div>
-                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.totalGalawPointsPurchased)}</div>
-                </div>
-                <div className={styles.overviewItem}>
-                  <div className={styles.overviewItemLabel}>Consumed</div>
-                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.totalGalawPointsConsumed)}</div>
-                </div>
-                <div className={styles.overviewItem}>
-                  <div className={styles.overviewItemLabel}>Outstanding</div>
-                  <div className={styles.overviewItemValue}>{formatNumber(dashStats.outstandingGalawPoints)}</div>
-                </div>
-                <div className={styles.overviewItem}>
-                  <div className={styles.overviewItemLabel}>Incidents</div>
-                  <div className={styles.overviewItemValue}>{dashStats.incidentsThisMonth}</div>
-                </div>
-              </div>
-              <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--color-border-light)' }}>
-                <div className={styles.metricsList}>
-                  <div className={styles.metricRow}>
-                    <span className={styles.metricLabel}>User Growth</span>
-                    <span className={styles.metricValue}>{dashStats.userGrowth}%</span>
-                  </div>
-                  <div className={styles.metricRow}>
-                    <span className={styles.metricLabel}>Job Growth</span>
-                    <span className={styles.metricValue} style={{ color: 'var(--color-danger)' }}>{dashStats.jobGrowth}%</span>
-                  </div>
-                  <div className={styles.metricRow}>
-                    <span className={styles.metricLabel}>Transaction Growth</span>
-                    <span className={styles.metricValue}>{dashStats.transactionGrowth >= 0 ? '+' : ''}{dashStats.transactionGrowth}%</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

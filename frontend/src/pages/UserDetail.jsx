@@ -282,7 +282,7 @@ export default function UserDetail() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="text-sm font-semibold" style={{ color: pct >= 80 ? 'var(--color-success)' : pct >= 60 ? 'var(--color-warning)' : 'var(--color-danger)' }}>
+                        <div className="text-sm font-semibold" style={{ color: pct >= 80 ? 'var(--color-success)' : pct >= 60 ? 'var(--color-warning)' : 'var(--color-error)' }}>
                           {pct}%
                         </div>
                         <StatusBadge status={a.status} />

@@ -320,7 +320,7 @@ export default function Oversight() {
                     <div className="detail-panel-section">
                       <h4>Timeline</h4>
                       {selectedIncident.timeline.map((entry, i) => (
-                        <div key={i} className="flex gap-3 py-2" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+                        <div key={i} className="flex gap-3 py-2" style={{ borderBottom: '1px solid var(--color-border)' }}>
                           <div className="text-xs text-muted" style={{ minWidth: 140 }}>{formatDateTime(entry.date)}</div>
                           <div className="flex-1">
                             <div className="font-medium text-xs">{entry.title}</div>

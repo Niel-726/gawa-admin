@@ -19,7 +19,7 @@
   justify-content: center;
   border-radius: var(--radius-md);
   color: var(--color-text-muted);
-  transition: all var(--transition-fast);
+  transition: all var(--transition);
   border: 1px solid var(--color-border);
   background: #FFFFFF;
 }
@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition);
 }
 
 .newMessagePanelClose:hover {
@@ -104,7 +104,7 @@
   gap: 0.75rem;
   padding: 0.625rem 0.75rem;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition);
   border-bottom: 1px solid var(--color-border);
 }
 

@@ -1,0 +1,1 @@
+import{j as a,a8 as c}from"./vendor-react-nKzJQrdj.js";function i({value:e,onChange:s,placeholder:r="Search..."}){return a.jsxs("div",{className:"search-bar",children:[a.jsx("span",{className:"search-icon",children:a.jsx(c,{size:16})}),a.jsx("input",{type:"text",placeholder:r,value:e,onChange:t=>s(t.target.value)})]})}export{i as S};

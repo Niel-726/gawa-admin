@@ -4,10 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
 import { usePermissions } from '../utils/permissions';
 import { getJobById, getProposalsByJob, updateJobStatus } from '../mock-data';
-import { formatDate, formatCurrency, formatDateTime } from '../utils/helpers';
+import { formatDate, formatCurrency } from '../utils/helpers';
 import Header from '../components/layout/Header';
-import StatusBadge from '../components/common/StatusBadge';
 import Tabs from '../components/common/Tabs';
+import StatusBadge from '../components/common/StatusBadge';
 import NotesPanel from '../components/common/NotesPanel';
 import ConfirmModal from '../components/common/ConfirmModal';
 import { Check, Circle, ChevronRight } from 'lucide-react';
@@ -21,9 +21,8 @@ export default function JobDetail() {
   const job = getJobById(id);
   const [refresh, setRefresh] = useState(0);
   const proposals = useMemo(() => getProposalsByJob(id), [id, refresh]);
-  const [activeTab, setActiveTab] = useState('details');
+  const [activeTab, setActiveTab] = useState('Proposals');
   const [showConfirm, setShowConfirm] = useState(null);
-
 
   if (!job) {
     return (
@@ -41,32 +40,41 @@ export default function JobDetail() {
   const allTasksDone = job.tasks?.length > 0 && job.tasks.every((t) => t.status === 'completed');
   const taskProgress = job.tasks?.length > 0 ? Math.round((job.tasks.filter((t) => t.status === 'completed').length / job.tasks.length) * 100) : 0;
 
-  const totalTabs = ['details', 'tasks', 'proposals', 'notes'];
-
   return (
     <div>
       <Header title={job.title} />
-      <div className="card mb-4">
-        <div className="card-body">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+      <div className="card">
+        <div className="card-body" style={{ padding: 'var(--space-3) var(--space-5)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
             <div>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>{job.title}</h2>
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', color: 'var(--color-text-muted)', fontSize: 14 }}>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 700 }}>{job.title}</h2>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', color: 'var(--color-text-muted)', fontSize: 13, marginTop: 2 }}>
                 <span>by {job.clientName}</span>
                 <span>{job.category}</span>
                 <span>{job.type}</span>
                 <span>{job.location}</span>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {job.status === 'active' && can('finishJob') && <button className="btn btn-accent btn-sm" onClick={() => setShowConfirm('finish')}>Mark Finished</button>}
-              {job.status === 'finished' && can('completeJob') && <button className="btn btn-success btn-sm" onClick={() => setShowConfirm('complete')}>Mark Completed</button>}
+            <div style={{ display: 'flex', gap: '0.375rem' }}>
+              {job.status === 'active' && can('finishJob') && <button className="btn btn-accent btn-sm" onClick={() => setShowConfirm('finish')}>Finish</button>}
+              {job.status === 'finished' && can('completeJob') && <button className="btn btn-success btn-sm" onClick={() => setShowConfirm('complete')}>Complete</button>}
               {can('flagJob') && <button className="btn btn-outline btn-sm" onClick={() => setShowConfirm('flag')}>Flag</button>}
               {can('removeJob') && <button className="btn btn-danger btn-sm" onClick={() => setShowConfirm('remove')}>Remove</button>}
               <button className="btn btn-accent btn-sm" onClick={() => navigate('/messages')}>Message</button>
             </div>
           </div>
-          <div className="detail-grid">
+
+          {(job.images?.length > 0) && (
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', overflowX: 'auto', paddingBottom: '0.25rem' }}>
+              {job.images.map((url, i) => (
+                <div key={i} style={{ width: 200, height: 130, borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0, background: 'var(--color-surface-offset)' }}>
+                  <img src={url} alt={`${job.title} photo ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="detail-grid" style={{ gap: 'var(--space-3)' }}>
             <div className="detail-field"><div className="detail-label">Status</div><div className="detail-value"><StatusBadge status={job.status} /></div></div>
             <div className="detail-field"><div className="detail-label">Budget</div><div className="detail-value">{formatCurrency(job.budget)}</div></div>
             <div className="detail-field"><div className="detail-label">Deadline</div><div className="detail-value">{formatDate(job.deadline)}</div></div>
@@ -74,13 +82,13 @@ export default function JobDetail() {
             <div className="detail-field"><div className="detail-label">Created</div><div className="detail-value">{formatDate(job.createdAt)}</div></div>
             <div className="detail-field"><div className="detail-label">Flags</div><div className="detail-value">{job.flags > 0 ? <StatusBadge status="flagged" /> : 'None'}</div></div>
           </div>
-          <div className="mt-4">
-            <div className="detail-label mb-2">Description</div>
-            <p style={{ fontSize: 14, lineHeight: 1.6 }}>{job.description}</p>
+          <div style={{ marginTop: '0.5rem' }}>
+            <div className="detail-label" style={{ marginBottom: '0.25rem' }}>Description</div>
+            <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--color-text-muted)' }}>{job.description}</p>
           </div>
           {job.skills?.length > 0 && (
-            <div className="mt-4">
-              <div className="detail-label mb-2">Skills Required</div>
+            <div style={{ marginTop: '0.5rem' }}>
+              <div className="detail-label" style={{ marginBottom: '0.25rem' }}>Skills Required</div>
               <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
                 {job.skills.map((s, idx) => <span key={idx} className="status-badge" style={{ background: 'var(--color-surface)', color: 'var(--color-text)' }}>{s}</span>)}
               </div>
@@ -89,122 +97,109 @@ export default function JobDetail() {
         </div>
       </div>
 
-      <Tabs tabs={totalTabs.map(t => ({ key: t, label: t.charAt(0).toUpperCase() + t.slice(1) }))} activeTab={activeTab} onChange={setActiveTab} />
-      <div className="tab-content">
-        {activeTab === 'tasks' && (
-          <div className="card">
-            <div className="card-header">
-              <h3>Tasks & Milestones</h3>
-              {job.tasks?.length > 0 && (
-                <span style={{ fontSize: 13, color: 'var(--color-text-muted)', marginLeft: '1rem' }}>
-                  {taskProgress}% complete ({job.tasks.filter((t) => t.status === 'completed').length}/{job.tasks.length} tasks)
-                </span>
-              )}
-            </div>
-            <div className="card-body">
-              {job.status !== 'finished' && job.status !== 'completed' ? (
-                <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
-                  <Circle size={32} style={{ opacity: 0.3, marginBottom: 8 }} />
-                  <p>Tasks and completion are available once the job is marked as finished.</p>
+      <div className="detail-strip" style={{ marginTop: 'var(--space-3)', gap: 'var(--space-3)' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Tabs tabs={['Proposals', 'Tasks']} activeTab={activeTab} onChange={setActiveTab} />
+          <div className="tab-content" style={{ marginTop: 'var(--space-3)' }}>
+            {activeTab === 'Proposals' && (
+              <div className="card">
+                <div className="card-header">
+                  <h3>Proposals</h3>
+                  {job.proposalCount > 0 && <span style={{ fontSize: 13, color: 'var(--color-text-muted)' }}>{job.proposalCount} total</span>}
                 </div>
-              ) : job.tasks?.length === 0 ? (
-                <div className="empty-state"><div className="empty-state-text">No tasks configured for this job.</div></div>
-              ) : (
-                <>
-                  <div style={{ marginBottom: '1rem', background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', height: 8, overflow: 'hidden' }}>
-                    <div style={{ width: `${taskProgress}%`, height: '100%', background: taskProgress === 100 ? 'var(--color-success)' : 'var(--color-primary)', borderRadius: 'var(--radius-md)', transition: 'width 0.3s' }} />
-                  </div>
-                  {job.tasks.map((task) => (
-                    <div key={task.id} className="task-card">
-                      <div className="task-card-left">
-                        <div className={`task-status-icon ${task.status === 'completed' ? 'done' : task.status === 'in-progress' ? 'active' : ''}`}>
-                          {task.status === 'completed' ? <Check size={16} /> : <div style={{ width: 8, height: 8, borderRadius: '50%', background: task.status === 'in-progress' ? 'var(--color-warning)' : 'var(--color-border)' }} />}
-                        </div>
-                        <div>
-                          <div className="task-card-name">{task.name}</div>
-                          {task.milestone && <div className="task-card-milestone"><ChevronRight size={12} /> {task.milestone}</div>}
-                        </div>
+                <div className="card-body">
+                  {acceptedProp && (
+                    <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-success)' }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-success)', marginBottom: 6 }}><Check size={14} /> Accepted Proposal</div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: 13 }}><strong>{acceptedProp.talentName}</strong> - {formatCurrency(acceptedProp.amount)}</span>
+                        <StatusBadge status={acceptedProp.completionStatus || 'pending'} label={acceptedProp.completionStatus || 'Not started'} />
                       </div>
-                      <StatusBadge status={task.status} />
                     </div>
-                  ))}
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'proposals' && (
-          <div className="card">
-            <div className="card-body">
-              {acceptedProp && (
-                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-success)' }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-success)', marginBottom: 8 }}><Check size={16} /> Accepted Proposal</div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span><strong>{acceptedProp.talentName}</strong> - {formatCurrency(acceptedProp.amount)}</span>
-                    <StatusBadge status={acceptedProp.completionStatus || 'pending'} label={acceptedProp.completionStatus || 'Not started'} />
-                  </div>
+                  )}
+                  {proposals.length === 0 ? (
+                    <div className="empty-state" style={{ padding: 'var(--space-8) var(--space-5)' }}><div className="empty-state-text">No proposals yet</div></div>
+                  ) : (
+                    proposals.map((p) => (
+                      <div key={p.id} className="proposal-card" style={{ marginBottom: '0.75rem', padding: 'var(--space-4) var(--space-5)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                          <span style={{ fontWeight: 600, fontSize: 13 }}>{p.talentName}</span>
+                          <span style={{ fontSize: 13 }}>{formatCurrency(p.amount)}</span>
+                        </div>
+                        <div style={{ fontSize: 13, color: 'var(--color-text-muted)', marginBottom: 4 }}>{p.coverLetter}</div>
+                        <div style={{ fontSize: 12, color: 'var(--color-text-muted)', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                          <span>GP Used: {p.galawPointsUsed}</span>
+                          <span><StatusBadge status={p.status} /></span>
+                          <span>{formatDate(p.submittedAt)}</span>
+                          {p.status === 'pending' && !acceptedProp && can('acceptProposal') && (
+                            <button className="btn btn-sm btn-success" style={{ marginLeft: 'auto' }} onClick={() => addNotification('moderation_decision', 'Proposal Acceptance', 'Proposal acceptance is for users only (simulated).', `/jobs/${job.id}`)}>Accept</button>
+                          )}
+                        </div>
+                        {p.proofOfCompletion && (
+                          <div style={{ marginTop: 6, padding: '0.5rem', background: 'var(--color-surface)', borderRadius: 'var(--radius-sm)' }}>
+                            <span style={{ fontSize: 12, fontWeight: 500 }}>Proof: </span>
+                            {p.proofOfCompletion.map((f, idx) => <span key={idx} style={{ fontSize: 12, color: 'var(--color-blue)', marginRight: 6 }}>{f}</span>)}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
                 </div>
-              )}
-              {proposals.length === 0 ? (
-                <div className="empty-state"><div className="empty-state-text">No proposals yet</div></div>
-              ) : (
-                proposals.map((p) => (
-                  <div key={p.id} className="proposal-card" style={{ marginBottom: '0.75rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                      <span style={{ fontWeight: 600 }}>{p.talentName}</span>
-                      <span>{formatCurrency(p.amount)}</span>
-                    </div>
-                    <div style={{ fontSize: 14, color: 'var(--color-text-muted)', marginBottom: 4 }}>{p.coverLetter}</div>
-                    <div style={{ fontSize: 13, color: 'var(--color-text-muted)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                      <span>GP Used: {p.galawPointsUsed}</span>
-                      <span><StatusBadge status={p.status} /></span>
-                      <span>{formatDate(p.submittedAt)}</span>
-                      {p.status === 'pending' && !acceptedProp && can('acceptProposal') && (
-                        <button className="btn btn-sm btn-success" onClick={() => addNotification('moderation_decision', 'Proposal Acceptance', 'Proposal acceptance is for users only (simulated).', `/jobs/${job.id}`)}>Accept Proposal</button>
-                      )}
-                    </div>
-                    {p.proofOfCompletion && (
-                      <div style={{ marginTop: 8, padding: 8, background: 'var(--color-surface)', borderRadius: 'var(--radius-sm)' }}>
-                        <span style={{ fontSize: 13, fontWeight: 500 }}>Proof of Completion: </span>
-                        {p.proofOfCompletion.map((f, idx) => <span key={idx} style={{ fontSize: 13, color: 'var(--color-info)', marginRight: 8 }}>{f}</span>)}
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'notes' && (
-          <div className="card">
-            <div className="card-header"><h3>Admin Notes</h3></div>
-            <div className="card-body">
-              <NotesPanel
-                notes={job.notes || []}
-                onAddNote={(note) => { addNotification('moderation_decision', 'Note Added on Job', `Note added to job "${job.title}": ${note.text}`, `/jobs/${job.id}`); }}
-              />
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'details' && (
-          <div className="card">
-            <div className="card-body">
-              <div className="detail-grid">
-                <div className="detail-field"><div className="detail-label">Client</div><div className="detail-value"><span className="cell-link" onClick={() => navigate(`/users/${job.clientId}`)}>{job.clientName}</span></div></div>
-                <div className="detail-field"><div className="detail-label">Location</div><div className="detail-value">{job.location}</div></div>
-                <div className="detail-field"><div className="detail-label">Type</div><div className="detail-value">{job.type}</div></div>
-                <div className="detail-field"><div className="detail-label">Category</div><div className="detail-value">{job.category}</div></div>
-                <div className="detail-field"><div className="detail-label">Budget</div><div className="detail-value">{formatCurrency(job.budget)}</div></div>
-                <div className="detail-field"><div className="detail-label">Deadline</div><div className="detail-value">{formatDate(job.deadline)}</div></div>
-                <div className="detail-field"><div className="detail-label">Proposal Count</div><div className="detail-value">{job.proposalCount}</div></div>
-                <div className="detail-field"><div className="detail-label">Created</div><div className="detail-value">{formatDateTime(job.createdAt)}</div></div>
               </div>
-            </div>
+            )}
+            {activeTab === 'Tasks' && (
+              <div className="card">
+                <div className="card-header">
+                  <h3>Tasks & Milestones</h3>
+                  {job.tasks?.length > 0 && (
+                    <span style={{ fontSize: 13, color: 'var(--color-text-muted)' }}>
+                      {taskProgress}% complete ({job.tasks.filter((t) => t.status === 'completed').length}/{job.tasks.length} tasks)
+                    </span>
+                  )}
+                </div>
+                <div className="card-body">
+                  {job.status !== 'finished' && job.status !== 'completed' ? (
+                    <div style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                      <Circle size={28} style={{ opacity: 0.3, marginBottom: 6 }} />
+                      <p style={{ fontSize: 13 }}>Tasks are available once the job is finished.</p>
+                    </div>
+                  ) : job.tasks?.length === 0 ? (
+                    <div className="empty-state"><div className="empty-state-text">No tasks configured for this job.</div></div>
+                  ) : (
+                    <>
+                      <div style={{ marginBottom: '0.75rem', background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', height: 6, overflow: 'hidden' }}>
+                        <div style={{ width: `${taskProgress}%`, height: '100%', background: taskProgress === 100 ? 'var(--color-success)' : 'var(--color-accent)', borderRadius: 'var(--radius-md)', transition: 'width 0.3s' }} />
+                      </div>
+                      {job.tasks.map((task) => (
+                        <div key={task.id} className="task-card">
+                          <div className="task-card-left">
+                            <div className={`task-status-icon ${task.status === 'completed' ? 'done' : task.status === 'in-progress' ? 'active' : ''}`}>
+                              {task.status === 'completed' ? <Check size={14} /> : <div style={{ width: 8, height: 8, borderRadius: '50%', background: task.status === 'in-progress' ? 'var(--color-warning)' : 'var(--color-border)' }} />}
+                            </div>
+                            <div>
+                              <div className="task-card-name" style={{ fontSize: 13 }}>{task.name}</div>
+                              {task.milestone && <div className="task-card-milestone"><ChevronRight size={10} /> {task.milestone}</div>}
+                            </div>
+                          </div>
+                          <StatusBadge status={task.status} />
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+        <div className="card" style={{ width: 280, flexShrink: 0 }}>
+          <div className="card-header"><h3>Admin Notes</h3></div>
+          <div className="card-body" style={{ padding: 'var(--space-3) var(--space-4)' }}>
+            <NotesPanel
+              notes={job.notes || []}
+              onAddNote={(note) => { addNotification('moderation_decision', 'Note Added on Job', `Note added to job "${job.title}": ${note.text}`, `/jobs/${job.id}`); }}
+            />
+          </div>
+        </div>
       </div>
 
       <ConfirmModal

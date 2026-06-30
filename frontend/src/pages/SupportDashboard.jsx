@@ -22,10 +22,10 @@ export default function SupportDashboard() {
   const pendingReports = useMemo(() => getPendingReports(), []);
 
   const stats = [
-    { label: 'Pending Verifications', value: formatNumber(pendingVerifications.length), icon: <Check size={20} />, color: 'var(--color-info)' },
+    { label: 'Pending Verifications', value: formatNumber(pendingVerifications.length), icon: <Check size={20} />, color: 'var(--color-blue)' },
     { label: 'Open Disputes', value: formatNumber(openDisputes.length), icon: <Scale size={20} />, color: 'var(--color-warning)' },
     { label: 'Pending Appeals', value: formatNumber(pendingAppeals.length), icon: <RotateCcw size={20} />, color: 'var(--color-accent)' },
-    { label: 'Flagged Reviews', value: formatNumber(flaggedReviews.length), icon: <Sword size={20} />, color: 'var(--color-danger)' },
+    { label: 'Flagged Reviews', value: formatNumber(flaggedReviews.length), icon: <Sword size={20} />, color: 'var(--color-error)' },
   ];
 
   return (

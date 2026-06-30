@@ -1,1 +1,0 @@
-import{j as r}from"./vendor-react-v553QN3p.js";import{d as c}from"./index-7aIg8B9n.js";function p({status:s,label:a,className:t}){const e=(s||"").toLowerCase().replace(/\s+/g,"-"),o=a||s||"";return r.jsx("span",{className:`status-badge ${e} ${t||""}`,children:c(o)})}export{p as S};

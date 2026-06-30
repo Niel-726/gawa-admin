@@ -90,7 +90,7 @@ export default function RentalDetail() {
           {rental.damageReport && (
             <div className="detail-field" style={{ marginTop: 16 }}>
               <div className="detail-label">Damage Report</div>
-              <div className="detail-value" style={{ color: 'var(--color-danger)', marginTop: 4 }}>{rental.damageReport}</div>
+              <div className="detail-value" style={{ color: 'var(--color-error)', marginTop: 4 }}>{rental.damageReport}</div>
             </div>
           )}
         </div>

@@ -1,11 +1,15 @@
 import React from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
-export default function StatCard({ label, value, icon, change, changeLabel, color }) {
-  const bgColor = color || 'var(--color-primary)';
+export default function StatCard({ label, value, icon, change, changeLabel, color, className, onClick }) {
+  const accentColor = color || 'var(--color-accent)';
   const isPositive = change >= 0;
   return (
-    <div className="stat-card">
+    <div
+      className={`stat-card${onClick ? ' clickable' : ''}${className ? ' ' + className : ''}`}
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : undefined }}
+    >
       <div className="stat-card-header">
         <div>
           <div className="stat-card-label">{label}</div>
@@ -20,7 +24,10 @@ export default function StatCard({ label, value, icon, change, changeLabel, colo
           )}
         </div>
         {icon && (
-          <div className="stat-card-icon" style={{ background: `${bgColor}15`, color: bgColor }}>
+          <div
+            className="stat-card-icon"
+            style={{ background: `${accentColor}15`, color: accentColor }}
+          >
             {icon}
           </div>
         )}

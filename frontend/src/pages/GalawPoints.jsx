@@ -35,7 +35,7 @@ const modalStyles = {
     background: 'var(--color-bg)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-xl)',
     width: '100%', maxWidth: 560, maxHeight: '85vh', overflowY: 'auto', padding: '1.5rem 2rem',
   },
-  title: { fontSize: 'var(--text-xl)', fontWeight: 600, marginBottom: '1.25rem', color: 'var(--color-primary)' },
+  title: { fontSize: 'var(--text-xl)', fontWeight: 600, marginBottom: '1.25rem', color: 'var(--color-text)' },
   actions: { display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1.25rem' },
 };
 
@@ -225,7 +225,7 @@ export default function GalawPoints() {
     { key: 'points', label: 'Points', render: (row) => <strong>{formatNumber(row.points)}</strong> },
     { key: 'price', label: 'Price', render: (row) => formatCurrency(row.price) },
     { key: 'description', label: 'Description' },
-    { key: 'isActive', label: 'Active', render: (row) => row.isActive ? <Check size={16} color="var(--color-success)" /> : <X size={16} color="var(--color-danger)" /> },
+    { key: 'isActive', label: 'Active', render: (row) => row.isActive ? <Check size={16} color="var(--color-success)" /> : <X size={16} color="var(--color-error)" /> },
     { key: 'createdAt', label: 'Created', render: (row) => formatDate(row.createdAt) },
     ...(can('managePacks') ? [{
       key: 'actions', label: 'Actions', render: (row) => (
@@ -247,7 +247,7 @@ export default function GalawPoints() {
     { key: 'userName', label: 'User' },
     { key: 'type', label: 'Type', render: (row) => <StatusBadge status={row.type} /> },
     { key: 'points', label: 'Points', render: (row) => (
-      <span style={{ color: row.points > 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 600 }}>
+      <span style={{ color: row.points > 0 ? 'var(--color-success)' : 'var(--color-error)', fontWeight: 600 }}>
         {row.points > 0 ? '+' : ''}{row.points}
       </span>
     )},
@@ -334,19 +334,19 @@ export default function GalawPoints() {
       {message && (
         <div style={{
           padding: '0.625rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem',
-          background: message.type === 'success' ? 'var(--color-success-bg)' : 'var(--color-danger-bg)',
-          color: message.type === 'success' ? 'var(--color-success)' : 'var(--color-danger)',
+          background: message.type === 'success' ? 'var(--color-success-subtle)' : 'var(--color-error-subtle)',
+          color: message.type === 'success' ? 'var(--color-success)' : 'var(--color-error)',
           fontSize: 'var(--text-sm)',
         }}>
           {message.text}
         </div>
       )}
 
-      <div className="dashboard-grid" style={{ marginBottom: '1.5rem' }}>
+      <div className="kpi-row">
         <StatCard label="Total Purchased" value={formatNumber(dashStats.totalGalawPointsPurchased)} icon={<Star size={20} />} color="var(--color-success)" />
         <StatCard label="Total Consumed" value={formatNumber(dashStats.totalGalawPointsConsumed)} icon={<ArrowRight size={20} />} color="var(--color-warning)" />
-        <StatCard label="Total Refunded" value={formatNumber(dashStats.totalGalawPointsRefunded)} icon={<RotateCcw size={20} />} color="var(--color-info)" />
-        <StatCard label="Outstanding Balance" value={formatNumber(dashStats.outstandingGalawPoints)} icon={<PhilippinePeso size={20} />} color="var(--color-primary)" />
+        <StatCard label="Total Refunded" value={formatNumber(dashStats.totalGalawPointsRefunded)} icon={<RotateCcw size={20} />} color="var(--color-blue)" />
+        <StatCard label="Outstanding Balance" value={formatNumber(dashStats.outstandingGalawPoints)} icon={<PhilippinePeso size={20} />} color="var(--color-text)" />
       </div>
 
       <Tabs tabs={tabs} activeTab={tab} onChange={setTab} />
